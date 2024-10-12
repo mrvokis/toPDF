@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script>
+  <script src="https://unpkg.com/downloadjs@1.4.7"></script>   
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@pdf-lib/fontkit@0.0.4/dist/fontkit.umd.min.js"></script>
+  <!--script src="//mozilla.github.io/pdf.js/build/pdf.js"></script-->
+</head>
+<body>
+  <div class="container">
+  <div class="row">    
+    <div class="col-12 mt-4">
+     <form action="" method="POST" enctype="multipart/form-data" id="formFile" class="converter__inner">
+        <div>
+       <input class="btn file-loader btn-secondary" id="input" type="file" name="file" accept=".pdf" accept="application/pdf" />            
+        </div>
+       
+        <div class="mt-4">
+          <input placeholder="Фамилия и имя" class="form-input" id="fullname" type="text" /> 
+          <input placeholder="Место на турнире" class="form-input" id="place" type="number" />    
+          <input placeholder="Название турнира" class="form-input" id="nameTourn" type="text" />    
+          <input placeholder="Дата проведения" class="form-input" id="date" type="text" />               
+        </div>      
+      </form> 
+<hr>
+      <button class="btn action-btn btn-success mjs-modifyPdf">Внести информацию и скачать грамоту</button> 
+    </div>
+  </div>
+</div> 
+<style>
+  html {
+    overflow-x: hidden;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+  }
+ form .mt-4 {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 50%;
+    max-width: 457px;
+    margin: 0 auto;
+  }
+  .btn {
+    display: block;
+    margin: 20px auto 20px auto;
+    height: 50px;
+    width: 50%;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    max-width: 457px;
+  }
+  .action-btn {
+    display: block;
+    margin: 20px auto 20px auto;
+    height: 50px;
+    width: 50%;
+    max-width: 457px;
+    font-family: "Montserrat", sans-serif;
+    border:none;
+    text-align: center;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    box-shadow: 0 0 20px #eee;
+    border-radius: 10px;
+    background-image: linear-gradient(to right, #003CC5 0%, #0B63F6 51%, #003CC5 100%)
+
+  }
+  .action-btn:hover {
+    background-position: right center;
+  }
+  .form-input {
+    height: 40px;
+    border: 1px solid #000;
+    border-radius: 10px;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    padding: 0 20px 0 20px;
+  }
+</style> 
+<script>
+window.addEventListener('load', () => {
+    const fileInput = document.getElementById('input');   
+    const textForPdf = document.getElementById('fullname');
+    const textForPdf2 = document.getElementById('place');
+    const textForPdf3 = document.getElementById('nameTourn');
+    const textForPdf4 = document.getElementById('date');
+    const buttonSave = document.querySelector(".mjs-savePdf");   
+    const buttonModify = document.querySelector(".mjs-modifyPdf");   
+    
+    const { PDFDocument, StandardFonts, grayscale, rgb, degrees } = PDFLib;   
+    let files; 
+    let pdfBytes;
+    let text = 'Some text';
+  
+    fileInput.addEventListener('change', (event) => {
+          files = event.target.files.item(0);
+      });
+          
+    const uploadFiles = () => {
+      const fileReader = new FileReader();
+      return new Promise((resolve, reject) => {
+        fileReader.onerror = () => {
+          fileReader.abort();
+        };
+        fileReader.onload = () => {
+          modifyPdf(fileReader.result);
+        };
+        fileReader.readAsArrayBuffer(files);    
+      });   
+    }
+      
+       
+    const modifyPdf = async (files) => {  	
+
+      const pdfDoc = await PDFDocument.load(files);
+      const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const url2 = 'https://db.onlinewebfonts.com/t/643e59524d730ce6c6f2384eebf945f8.ttf'
+      const fontBytes = await fetch(url2).then(res => res.arrayBuffer())
+		let customFont;
+		if (fontBytes) {
+			pdfDoc.registerFontkit(fontkit);
+			await pdfDoc.embedFont(fontBytes);
+			customFont = await pdfDoc.embedFont(fontBytes);
+		}
+      const pages = pdfDoc.getPages();
+      const firstPage = pages[0];
+      const secondPage = pages[1];
+      const { width, height } = firstPage.getSize(); 
+      //const jpgUrl = 'https://pdf-lib.js.org/assets/cat_riding_unicorn.jpg';
+      const jpgUrl = 'https://pdf-lib.js.org/assets/cat_riding_unicorn.jpg';
+      const jpgImageBytes = await fetch(jpgUrl).then((res) => res.arrayBuffer());
+        console.log(jpgImageBytes);
+      const jpgImage = await pdfDoc.embedJpg(jpgImageBytes);
+        console.log(jpgImage);
+      //debugger;
+
+      firstPage.drawText(text, {
+        x: width/2-100,
+        y: 480,
+        font:customFont,
+        size: 30,
+        maxWidth:500,
+      });
+      firstPage.drawText(text2, {
+        x: 267,
+        y: 440,
+        font:customFont,
+        size: 30,
+      });
+      firstPage.drawText(text3, {
+        x: 167,
+        y: 370,
+        font:customFont,
+        size: 30,
+        maxWidth:400,
+      });
+      firstPage.drawText(text4, {
+        x: 55,
+        y: 250,
+        font:customFont,
+        size: 30,
+      });
+
+      
+      if(secondPage) {
+        secondPage.drawRectangle({
+          x: 25,
+          y: 75,
+          width: 250,
+          height: 75,
+          rotate: degrees(-15),
+          borderWidth: 5,
+          borderColor: grayscale(0.5),
+          color: rgb(0.75, 0.2, 0.2),
+          opacity: 0.5,
+          borderOpacity: 0.75,
+        })        
+      }
+  
+        pdfBytes = await pdfDoc.save();
+        setTimeout(() => {
+          downloadPdf()
+        }, 200);
+      };  
+
+
+      textForPdf.addEventListener('change', event => {
+        text = textForPdf.value;
+    }); 
+    textForPdf2.addEventListener('change', event => {
+        text2 = textForPdf2.value;
+    }); 
+    textForPdf3.addEventListener('change', event => {
+        text3 = textForPdf3.value;
+    }); 
+    textForPdf4.addEventListener('change', event => {
+        text4 = textForPdf4.value;
+    }); 
+      
+      const downloadPdf = () => {
+        if(pdfBytes) {
+          download(pdfBytes, `Грамота ${textForPdf.value}.pdf`, "application/pdf");          
+        } 
+        else (alert('Ошибка!'))
+      };
+      
+      
+      buttonModify.addEventListener("click", uploadFiles); 
+});
+
+
+</script>
+</body>
+
