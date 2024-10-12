@@ -21,7 +21,7 @@
        
        <div class="btn for-file-load-container">
         <input class="btn file-loader btn-secondary" id="input" type="file" name="file" accept=".pdf" accept="application/pdf" />
-        <span><span class="animatedarrow">➜</span>Перетащите или выберите файл<span>
+        <span class="input-container-text"><span class="animatedarrow">➜</span>Перетащите или выберите файл<span>
        </div>            
         </div>
        
@@ -115,14 +115,15 @@
 </style> 
 <script>
 window.addEventListener('load', () => {
-    const fileInput = document.getElementById('input');   
+    const fileInput = document.getElementById('input'); 
+    const inputContainer = document.getElementsByClassName('input-container-text')[0];
     const textForPdf = document.getElementById('fullname');
     const textForPdf2 = document.getElementById('place');
     const textForPdf3 = document.getElementById('nameTourn');
     const textForPdf4 = document.getElementById('date');
     const buttonSave = document.querySelector(".mjs-savePdf");   
     const buttonModify = document.querySelector(".mjs-modifyPdf");   
-    
+    const matchFileInput = /\w+.pdf/gmi
     const { PDFDocument, StandardFonts, grayscale, rgb, degrees } = PDFLib;   
     let files; 
     let pdfBytes;
@@ -130,6 +131,7 @@ window.addEventListener('load', () => {
   
     fileInput.addEventListener('change', (event) => {
           files = event.target.files.item(0);
+          inputContainer.innerText = `Файл: ${fileInput.value.match(matchFileInput)}`
       });
           
     const uploadFiles = () => {
@@ -244,8 +246,6 @@ window.addEventListener('load', () => {
       buttonModify.addEventListener("click", uploadFiles); 
       
 });
-
-
 </script>
 </body>
 
