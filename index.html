@@ -17,8 +17,12 @@
   <div class="row">    
     <div class="col-12 mt-4">
      <form action="" method="POST" enctype="multipart/form-data" id="formFile" class="converter__inner">
-        <div>
-       <input class="btn file-loader btn-secondary" id="input" type="file" name="file" accept=".pdf" accept="application/pdf" />            
+        <div class="container-file">
+       
+       <div class="btn for-file-load-container">
+        <input class="btn file-loader btn-secondary" id="input" type="file" name="file" accept=".pdf" accept="application/pdf" />
+        <span><span class="animatedarrow">➜<span>Перетащите или выберите файл<span>
+       </div>            
         </div>
        
         <div class="mt-4">
@@ -28,7 +32,6 @@
           <input placeholder="Дата проведения" class="form-input" id="date" type="text" />               
         </div>      
       </form> 
-<hr>
       <button class="btn action-btn btn-success mjs-modifyPdf">Внести информацию и скачать грамоту</button> 
     </div>
   </div>
@@ -83,6 +86,31 @@
     font-family: "Montserrat", sans-serif;
     font-weight: 500;
     padding: 0 20px 0 20px;
+  }
+  .for-file-load-container {
+    position: relative;
+    border: 1px dashed #00000056;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    height: 100px;
+    align-items: center;
+    transition: 0.3s;
+  }
+  .for-file-load-container:hover{
+    border: 1px dashed #000;
+    transition: 0.3s;
+  }
+  .file-loader{
+    position: absolute;
+    z-index: 999;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    height: 100%;
+    cursor: pointer;
   }
 </style> 
 <script>
@@ -214,6 +242,7 @@ window.addEventListener('load', () => {
       
       
       buttonModify.addEventListener("click", uploadFiles); 
+      
 });
 
 
